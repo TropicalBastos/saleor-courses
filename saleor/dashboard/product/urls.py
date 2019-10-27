@@ -90,6 +90,36 @@ urlpatterns = [
         views.ajax_upload_image,
         name="product-images-upload",
     ),
+    url(
+        r"^(?P<product_pk>[0-9]+)/videos/$",
+        views.product_videos,
+        name="product-video-list",
+    ),
+    url(
+        r"^(?P<product_pk>[0-9]+)/videos/add/$",
+        views.product_video_create,
+        name="product-video-add",
+    ),
+    url(
+        r"^(?P<product_pk>[0-9]+)/videos/(?P<video_pk>[0-9]+)/$",
+        views.product_video_edit,
+        name="product-video-update",
+    ),
+    url(
+        r"^(?P<product_pk>[0-9]+)/videos/(?P<video_pk>[0-9]+)/delete/$",
+        views.product_video_delete,
+        name="product-video-delete",
+    ),
+    url(
+        r"^(?P<product_pk>[0-9]+)/videos/upload/$",
+        views.ajax_upload_video,
+        name="product-videos-upload",
+    ),
+    url(
+        r"^(?P<product_pk>[0-9]+)/videos/reorder/$",
+        views.ajax_reorder_product_videos,
+        name="product-videos-reorder",
+    ),
     url(r"attributes/$", views.attribute_list, name="attributes"),
     url(
         r"attributes/(?P<pk>[0-9]+)/$",

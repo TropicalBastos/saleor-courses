@@ -23,6 +23,7 @@ from ...product.models import (
     ProductType,
     ProductVariant,
     VariantImage,
+    ProductVideo,
 )
 from ...product.tasks import (
     update_product_minimal_variant_price_task,
@@ -524,6 +525,25 @@ class ProductImageForm(forms.ModelForm):
         create_product_thumbnails.delay(image.pk)
         return image
 
+class ProductVideoForm(forms.ModelForm):
+    use_required_attribute = True
+    variants = forms.ModelMultipleChoiceField(
+        queryset=ProductVariant.objects.none(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+
+    class Meta:
+        model = ProductImage
+        exclude = ("product", "sort_order")
+        labels = {
+            "video": pgettext_lazy("Product video", "Video"),
+        }
+
+    def save(self, commit=True):
+        video = super().save(commit=commit)
+        return video
+
 
 class VariantImagesSelectForm(forms.Form):
     images = forms.ModelMultipleChoiceField(
@@ -625,6 +645,43 @@ class UploadImageForm(forms.ModelForm):
         image = super().save(commit=commit)
         create_product_thumbnails.delay(image.pk)
         return image
+
+
+class ReorderProductVideosForm(forms.ModelForm):
+    ordered_videos = OrderedModelMultipleChoiceField(
+        queryset=ProductVideo.objects.none()
+    )
+
+    class Meta:
+        model = Product
+        fields = ()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance:
+            self.fields["ordered_videos"].queryset = self.instance.videos.all()
+
+    def save(self):
+        for order, video in enumerate(self.cleaned_data["ordered_videos"]):
+            video.sort_order = order
+            video.save()
+        return self.instance
+
+
+class UploadVideoForm(forms.ModelForm):
+    class Meta:
+        model = ProductVideo
+        fields = ["video", "title", "description"]
+        labels = {"video": pgettext_lazy("Product video", "Video")}
+
+    def __init__(self, *args, **kwargs):
+        product = kwargs.pop("product")
+        super().__init__(*args, **kwargs)
+        self.instance.product = product
+
+    def save(self, commit=True):
+        video = super().save(commit=commit)
+        return video
 
 
 class ProductBulkUpdate(forms.Form):

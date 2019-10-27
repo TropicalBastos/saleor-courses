@@ -1,0 +1,125 @@
+{% extends "dashboard/base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+  {% trans "Videos" %} - {{ block.super }}
+{% endblock %}
+
+{% block body_class %}body-products{% endblock %}
+
+{% block menu_products_class %}active{% endblock %}
+
+{% block header_extra %}
+  <div class="btn-fab-fixed">
+    <a class="btn-fab-default waves-effect waves-light"
+       id="videos-btn"
+       href="{% url 'dashboard:product-video-add' product_pk=product.pk %}"
+       title="{% trans "Add video" context "Add video button text" %}">
+      <svg data-src="{% static "dashboard/images/add.svg" %}" />
+    </a>
+  </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+  <ul class="breadcrumbs breadcrumbs--history">
+    <li>
+      <a href="{% url "dashboard:product-list" %}" class="breadcrumb">
+        {% trans "Products" context "Dashboard products list" %}
+      </a>
+    </li>
+    <li class="back-mobile">
+      <a href="{% url "dashboard:product-list" %}">
+        <svg data-src="{% static "dashboard/images/arrow-left.svg" %}" fill="#fff" width="20px" height="20px" />
+      </a>
+    </li>
+    <li>
+      <a href="{% url "dashboard:product-details" product.pk %}">{{ product }}</a>
+    </li>
+    <li>
+      <span class="breadcrumbs--ellipsed-item">{% trans "Videos" %}</span>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block menu_catalogue_class %} active{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div id="videos" class="tab-content col s12 m9">
+      <form action="{% url 'dashboard:product-videos-upload' product_pk=product.pk %}" id="product-video-form" novalidate>
+        <div class="dz-message"></div>
+        {% csrf_token %}
+        <div class="row">
+          <ul class="product-gallery sortable-items" data-post-url="{% url 'dashboard:product-videos-reorder' product_pk=product.pk %}" data-post-name="ordered_videos">
+            {% if videos %}
+              {% for video in videos %}
+                <li class="col s12 m6 l4 sortable-item"
+                    data-id="{{ video.pk }}">
+                  <div class="card">
+                    <div class="card-image product-gallery-item-video">
+                      <video></video>
+                    </div>
+                    <div class="sortable__drag-area"></div>
+                    <div class="card-action">
+                      <a class="btn-flat waves-effect"
+                         href="{% url 'dashboard:product-video-update' product_pk=product.pk video_pk=video.pk %}">
+                        {% trans "Edit" context "Dashboard edit action" %}
+                      </a>
+                      <a href="#base-modal"
+                         class="btn-flat waves-effect modal-trigger-custom"
+                         data-href="{% url 'dashboard:product-video-delete' product_pk=product.pk video_pk=video.pk %}">
+                        {% trans "Remove" context "Dashboard remove action" %}
+                      </a>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            {% else %}
+              <div class="sortable__drag-area"></div>
+            {% endif %}
+          </ul>
+        <div class="col s12 m6 l4 product-gallery-item dropzone-message">
+          <div class="row">
+            <span class="product-gallery-item-title product-gallery-item-title--noclip card-title black-text">
+              <span class="grey-text hide-on-med-and-down">
+                {% trans "Drop videos here to upload" context "Video gallery upload box text" %}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+      </form>
+      <script type="application/template" id="template">
+        <li class="col s12 m6 l4 product-gallery-item dz-preview dz-file-preview" data-id="{{ video.pk }}">
+          <div class="card">
+            <div class="card-video product-gallery-item-video">
+              <img data-dz-thumbnail />
+            </div>
+            <div class="dz-progress">
+              <span class="dz-upload" data-dz-uploadprogress></span>
+            </div>
+            <div class="card-content">
+              <span class="product-gallery-item-title card-title black-text">
+                <span class="grey-text">
+                  {% trans "No description" context "Empty video gallery message" %}
+                </span>
+              </span>
+            </div>
+            <div class="sortable__drag-area"></div>
+            <div class="card-action">
+              <a class="btn-flat waves-effect card-action-edit" data-href-template="{% url 'dashboard:product-video-update' product_pk=product.pk video_pk=0 %}">
+                {% trans "Edit" context "Dashboard edit action" %}
+              </a>
+              <a href="#base-modal" class="btn-flat waves-effect card-action-delete modal-trigger-custom"
+              data-href-template="{% url 'dashboard:product-video-delete' product_pk=product.pk video_pk=0 %}">
+                {% trans "Remove" context "Dashboard remove action" %}
+              </a>
+            </div>
+            </div>
+        </li>
+      </script>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "dashboard/base_modal.html" %}
+
+{% load i18n %}
+
+{% block form_class %}{% endblock %}
+
+{% block action_url %}
+{% url 'dashboard:product-video-delete' product_pk=product.pk video_pk=video.pk %}
+{% endblock %}
+
+{% block title %}
+{% trans "Remove product video" context "Modal remove video text" %}
+{% endblock %}
+
+{% block content %}
+  <div class="col s12">
+    <div class="center-align">
+      
+    </div>
+    <p>{% trans "Are you sure you want to remove product video?" context "Modal remove video text" %}</p>
+  </div>
+{% endblock content %}
+
+{% block primary_action %}
+{% trans "Remove" context "Dashboard delete action" %}
+{% endblock %}

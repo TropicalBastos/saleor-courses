@@ -547,6 +547,106 @@ def ajax_upload_image(request, product_pk):
 
 @staff_member_required
 @permission_required("product.manage_products")
+def product_videos(request, product_pk):
+    products = Product.objects.prefetch_related("videos")
+    product = get_object_or_404(products, pk=product_pk)
+    videos = product.videos.all()
+    ctx = {"product": product, "videos": videos, "is_empty": not videos.exists()}
+    return TemplateResponse(request, "dashboard/product/product_video/list.html", ctx)
+
+
+@staff_member_required
+@permission_required("product.manage_products")
+def product_video_create(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
+    product_video = ProductImage(product=product)
+    form = forms.ProductVideoForm(
+        request.POST or None, request.FILES or None, instance=product_video
+    )
+    if form.is_valid():
+        product_video = form.save()
+        msg = pgettext_lazy("Dashboard message", "Added video %s") % (
+            product_video.video.title,
+        )
+        messages.success(request, msg)
+        return redirect("dashboard:product-video-list", product_pk=product.pk)
+    ctx = {"form": form, "product": product, "product_video": product_video}
+    return TemplateResponse(request, "dashboard/product/product_video/form.html", ctx)
+
+
+@staff_member_required
+@permission_required("product.manage_products")
+def product_video_edit(request, product_pk, video_pk):
+    product = get_object_or_404(Product, pk=product_pk)
+    product_video = get_object_or_404(product.videos, pk=video_pk)
+    form = forms.ProductVideoForm(
+        request.POST or None, request.FILES or None, instance=product_video
+    )
+    if form.is_valid():
+        product_video = form.save()
+        msg = pgettext_lazy("Dashboard message", "Updated video %s") % (
+            product_video.video.title,
+        )
+        messages.success(request, msg)
+        return redirect("dashboard:product-video-list", product_pk=product.pk)
+    ctx = {"form": form, "product": product, "product_video": product_video}
+    return TemplateResponse(request, "dashboard/product/product_video/form.html", ctx)
+
+
+@staff_member_required
+@permission_required("product.manage_products")
+def product_video_delete(request, product_pk, video_pk):
+    product = get_object_or_404(Product, pk=product_pk)
+    video = get_object_or_404(product.videos, pk=video_pk)
+    if request.method == "POST":
+        video.delete()
+        msg = pgettext_lazy("Dashboard message", "Removed video %s") % (
+            video.video.title,
+        )
+        messages.success(request, msg)
+        return redirect("dashboard:product-video-list", product_pk=product.pk)
+    return TemplateResponse(
+        request,
+        "dashboard/product/product_video/modal/confirm_delete.html",
+        {"product": product, "video": video},
+    )
+
+
+@require_POST
+@staff_member_required
+def ajax_reorder_product_videos(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
+    form = forms.ReorderProductVideosForm(request.POST, instance=product)
+    status = 200
+    ctx = {}
+    if form.is_valid():
+        form.save()
+    elif form.errors:
+        status = 400
+        ctx = {"error": form.errors}
+    return JsonResponse(ctx, status=status)
+
+
+@require_POST
+@staff_member_required
+def ajax_upload_video(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
+    form = forms.UploadVideoForm(
+        request.POST or None, request.FILES or None, product=product
+    )
+    ctx = {}
+    status = 200
+    if form.is_valid():
+        video = form.save()
+        ctx = {"id": video.pk, "video": None, "order": video.sort_order}
+    elif form.errors:
+        status = 400
+        ctx = {"error": form.errors}
+    return JsonResponse(ctx, status=status)
+
+
+@staff_member_required
+@permission_required("product.manage_products")
 def attribute_list(request):
     attributes = Attribute.objects.prefetch_related(
         "values", "product_types", "product_variant_types"

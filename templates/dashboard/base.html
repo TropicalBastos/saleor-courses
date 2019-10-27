@@ -104,7 +104,7 @@
               <ul>
                   <li class="{% block menu_products_class %}{% endblock %}">
                     <a href="{% url 'dashboard:product-list' %}">
-                      {% trans "Products" context "Dashboard products list" %}
+                      {% trans "Courses" context "Dashboard products list" %}
                     </a>
                   </li>
                   <li class="{% block menu_categories_class %}{% endblock %}">
@@ -112,11 +112,6 @@
                       {% trans "Categories" context "Dashboard categories list" %}
                     </a>
                   </li>
-                <li class="{% block menu_collections_class %}{% endblock %}">
-                  <a href="{% url 'dashboard:collection-list' %}">
-                    {% trans "Collections" context "Dashboard side navigation link" %}
-                  </a>
-                </li>
               </ul>
             </li>
             {% endif %}

@@ -1,11 +1,12 @@
 from decimal import Decimal
 from typing import Iterable, Union
 from uuid import uuid4
+import os
 
 from django.conf import settings
 from django.contrib.postgres.aggregates import StringAgg
 from django.contrib.postgres.fields import JSONField
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db import models
 from django.db.models import Case, Count, F, FilteredRelation, Q, When
 from django.urls import reverse
@@ -433,6 +434,7 @@ class ProductVariant(ModelWithMetadata):
         Product, related_name="variants", on_delete=models.CASCADE
     )
     images = models.ManyToManyField("ProductImage", through="VariantImage")
+    videos = models.ManyToManyField("ProductVideo", through="VariantVideo")
     track_inventory = models.BooleanField(default=True)
     quantity = models.IntegerField(
         validators=[MinValueValidator(0)], default=Decimal(1)
@@ -889,12 +891,36 @@ class ProductImage(SortableModel):
         return self.product.images.all()
 
 
+class ProductVideo(SortableModel):
+    product = models.ForeignKey(
+        Product, related_name="videos", on_delete=models.CASCADE
+    )
+    video = models.FileField(upload_to="products", validators=[FileExtensionValidator(['.mp4','.mpg','.mpeg', '.ogg', '.avi'])])
+    title = models.CharField(max_length=128, default=None)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ("sort_order",)
+        app_label = "product"
+
+    def get_ordering_queryset(self):
+        return self.product.videos.all()
+
+
 class VariantImage(models.Model):
     variant = models.ForeignKey(
         "ProductVariant", related_name="variant_images", on_delete=models.CASCADE
     )
     image = models.ForeignKey(
         ProductImage, related_name="variant_images", on_delete=models.CASCADE
+    )
+
+class VariantVideo(models.Model):
+    variant = models.ForeignKey(
+        "ProductVariant", related_name="variant_videos", on_delete=models.CASCADE
+    )
+    video = models.ForeignKey(
+        ProductVideo, related_name="variant_videos", on_delete=models.CASCADE
     )
 
 

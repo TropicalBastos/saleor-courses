@@ -76,9 +76,9 @@
                   <div class="col s12 m3">
                     {{ product_form.is_published|materializecss }}
                   </div>
-                  <div class="col s12 m9">
+                  <!-- <div class="col s12 m9">
                     {{ product_form.publication_date|materializecss }}
-                  </div>
+                  </div> -->
                 </div>
                 {% include "dashboard/includes/_google_preview.html" with object=product form=product_form %}
               </div>
@@ -86,10 +86,10 @@
                 <div class="row">
                   {{ product_form.price|materializecss }}
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                   {{ product_form.tax_rate|materializecss }}
                   {{ product_form.charge_taxes|materializecss }}
-                </div>
+                </div> -->
                 {% if not product.product_type.has_variants %}
                   <div class="row">
                     {{ variant_form.sku|materializecss }}
@@ -97,15 +97,9 @@
                   <div class="row">
                     {{ variant_form.quantity|materializecss }}
                   </div>
-                  <div class="row">
-                    {{ variant_form.track_inventory|materializecss }}
-                  </div>
                 {% endif %}
                 <div class="row">
                   {{ product_form.category|materializecss }}
-                </div>
-                <div class="row">
-                  {{ product_form.collections|materializecss }}
                 </div>
                 {% if product.product_type.is_shipping_required %}
                   <span class="card-title">{% trans "Shipping" %}</span>

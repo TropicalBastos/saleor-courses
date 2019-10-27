@@ -68,6 +68,12 @@
           <div class="card-content">
             {% csrf_token %}
             <div class="row">
+              {{ form.title|materializecss }}
+            </div>
+            <div class="row">
+              {{ form.description|materializecss }}
+            </div>
+            <div class="row">
               {{ form.video|materializecss }}
             </div>
           </div>

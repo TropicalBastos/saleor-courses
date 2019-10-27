@@ -534,10 +534,12 @@ class ProductVideoForm(forms.ModelForm):
     )
 
     class Meta:
-        model = ProductImage
+        model = ProductVideo
         exclude = ("product", "sort_order")
         labels = {
             "video": pgettext_lazy("Product video", "Video"),
+            "title":  pgettext_lazy("Product title", "Title"),
+            "description":  pgettext_lazy("Product description", "Description"),
         }
 
     def save(self, commit=True):

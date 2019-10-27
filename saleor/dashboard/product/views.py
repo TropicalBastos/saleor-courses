@@ -16,6 +16,7 @@ from ...product.models import (
     ProductImage,
     ProductType,
     ProductVariant,
+    ProductVideo,
 )
 from ...product.tasks import update_product_minimal_variant_price_task
 from ...product.utils.availability import get_product_availability
@@ -559,14 +560,14 @@ def product_videos(request, product_pk):
 @permission_required("product.manage_products")
 def product_video_create(request, product_pk):
     product = get_object_or_404(Product, pk=product_pk)
-    product_video = ProductImage(product=product)
+    product_video = ProductVideo(product=product)
     form = forms.ProductVideoForm(
         request.POST or None, request.FILES or None, instance=product_video
     )
     if form.is_valid():
         product_video = form.save()
         msg = pgettext_lazy("Dashboard message", "Added video %s") % (
-            product_video.video.title,
+            product_video.title,
         )
         messages.success(request, msg)
         return redirect("dashboard:product-video-list", product_pk=product.pk)
@@ -585,7 +586,7 @@ def product_video_edit(request, product_pk, video_pk):
     if form.is_valid():
         product_video = form.save()
         msg = pgettext_lazy("Dashboard message", "Updated video %s") % (
-            product_video.video.title,
+            product_video.title,
         )
         messages.success(request, msg)
         return redirect("dashboard:product-video-list", product_pk=product.pk)
@@ -601,7 +602,7 @@ def product_video_delete(request, product_pk, video_pk):
     if request.method == "POST":
         video.delete()
         msg = pgettext_lazy("Dashboard message", "Removed video %s") % (
-            video.video.title,
+            video.title,
         )
         messages.success(request, msg)
         return redirect("dashboard:product-video-list", product_pk=product.pk)

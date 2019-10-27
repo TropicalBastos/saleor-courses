@@ -895,7 +895,7 @@ class ProductVideo(SortableModel):
     product = models.ForeignKey(
         Product, related_name="videos", on_delete=models.CASCADE
     )
-    video = models.FileField(upload_to="products", validators=[FileExtensionValidator(['.mp4','.mpg','.mpeg', '.ogg', '.avi'])])
+    video = models.FileField(upload_to="products", validators=[FileExtensionValidator(['mp4'])])
     title = models.CharField(max_length=128, default=None)
     description = models.TextField(blank=True)
 

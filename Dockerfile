@@ -47,6 +47,7 @@ RUN apt-get update \
     libgdk-pixbuf2.0-0 \
     shared-mime-info \
     mime-support \
+    npm \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -67,5 +68,9 @@ EXPOSE 8000
 ENV PORT 8000
 ENV PYTHONUNBUFFERED 1
 ENV PROCESSES 4
+
+RUN npm install
+RUN npm install -g webpack
+RUN npm install -g webpack-cli
 
 CMD ["uwsgi", "--ini", "/app/saleor/wsgi/uwsgi.ini"]

@@ -54,6 +54,7 @@ def product_details(request, pk):
     product = get_object_or_404(products, pk=pk)
     variants = product.variants.all()
     images = product.images.all()
+    videos = product.videos.all()
     availability = get_product_availability(
         product,
         discounts=request.discounts,
@@ -76,6 +77,7 @@ def product_details(request, pk):
         "discounted_price": discounted_price,
         "variants": variants,
         "images": images,
+        "videos": videos,
         "no_variants": no_variants,
         "only_variant": only_variant,
         "purchase_cost": purchase_cost,

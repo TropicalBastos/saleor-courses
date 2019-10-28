@@ -24,6 +24,7 @@ from mptt.models import MPTTModel
 from prices import MoneyRange
 from text_unidecode import unidecode
 from versatileimagefield.fields import PPOIField, VersatileImageField
+from django.core.files.storage import FileSystemStorage
 
 from ..core.db.fields import SanitizedJSONField
 from ..core.exceptions import InsufficientStock
@@ -895,7 +896,10 @@ class ProductVideo(SortableModel):
     product = models.ForeignKey(
         Product, related_name="videos", on_delete=models.CASCADE
     )
-    video = models.FileField(upload_to="products", validators=[FileExtensionValidator(['mp4'])])
+
+    prefix_path = os.path.abspath(os.path.dirname(__name__))
+    upload_storage = FileSystemStorage(location=prefix_path)
+    video = models.FileField(upload_to="products", storage=upload_storage, validators=[FileExtensionValidator(['mp4'])])
     title = models.CharField(max_length=128, default=None)
     description = models.TextField(blank=True)
 

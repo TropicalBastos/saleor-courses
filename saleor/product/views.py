@@ -239,15 +239,17 @@ def collection_index(request, slug, pk):
 @login_required
 def stream_video(request, product_pk, video_pk):
     current_user = request.user
+
+    #check if user has purchased the course or is super admin
     if not current_user.has_perm("product.manage_products"):
-        return HttpResponseForbidden
+        orders = request.user.orders.confirmed().prefetch_related("lines")
+        lines = orders.lines().prefetch_related("order_lines").all()
+        found = [line for line in lines if line.variant.pk == product_pk]
+        if not found:
+            return HttpResponseForbidden
 
     product = Product.objects.prefetch_related("videos").get(pk=product_pk)
     video = product.videos.get(pk=video_pk)
-
-    #check if user has purchased the course
-    # if ("product.manage_products" not in current_user.permissions):
-    #     pass
 
     prefix_path = get_course_prefix()
     filename = video.video.path

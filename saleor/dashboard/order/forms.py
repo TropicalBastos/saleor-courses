@@ -657,7 +657,7 @@ class FulfillmentForm(forms.ModelForm):
     """Create fulfillment group for a given order."""
 
     send_mail = forms.BooleanField(
-        initial=True,
+        initial=False,
         required=False,
         label=pgettext_lazy(
             "Send mail to customer", "Send shipment details to your customer now"

@@ -97,8 +97,8 @@ class CategoryTranslation(SeoModelTranslation):
 class ProductType(ModelWithMetadata):
     name = models.CharField(max_length=128)
     has_variants = models.BooleanField(default=True)
-    is_shipping_required = models.BooleanField(default=True)
-    is_digital = models.BooleanField(default=False)
+    is_shipping_required = models.BooleanField(default=False)
+    is_digital = models.BooleanField(default=True)
     weight = MeasurementField(
         measurement=Weight, unit_choices=WeightUnits.CHOICES, default=zero_weight
     )
@@ -440,7 +440,7 @@ class ProductVariant(ModelWithMetadata):
         validators=[MinValueValidator(0)], default=Decimal(1)
     )
     quantity_allocated = models.IntegerField(
-        validators=[MinValueValidator(0)], default=Decimal(0)
+        validators=[MinValueValidator(0)], default=Decimal(1)
     )
     cost_price_amount = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
@@ -464,7 +464,9 @@ class ProductVariant(ModelWithMetadata):
 
     @property
     def quantity_available(self):
-        return max(self.quantity - self.quantity_allocated, 0)
+        # No need for video courses/quantity is limitless
+        # return max(self.quantity - self.quantity_allocated, 0)
+        return 1
 
     @property
     def is_visible(self):
@@ -479,8 +481,10 @@ class ProductVariant(ModelWithMetadata):
 
         If stock handling is disabled, it simply run no check.
         """
-        if self.track_inventory and quantity > self.quantity_available:
-            raise InsufficientStock(self)
+        # No need for video courses/quantity is limitless
+        # if self.track_inventory and quantity > self.quantity_available:
+        #     raise InsufficientStock(self)
+        pass
 
     @property
     def base_price(self):

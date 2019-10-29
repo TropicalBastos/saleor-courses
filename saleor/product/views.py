@@ -8,12 +8,14 @@ from django.http import (
     FileResponse,
     HttpResponseNotFound,
     HttpResponsePermanentRedirect,
+    HttpResponseForbidden,
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from draftjs_sanitizer import SafeJSONEncoder
+from django.contrib.auth.decorators import login_required
 
 from ..checkout.utils import (
     get_checkout_from_request,
@@ -24,7 +26,7 @@ from ..core.utils import serialize_decimal
 from ..seo.schema.product import product_json_ld
 from .filters import ProductCategoryFilter, ProductCollectionFilter
 from .forms import ProductForm
-from .models import Category, DigitalContentUrl
+from .models import Category, DigitalContentUrl, Product
 from .utils import (
     collections_visible_to_user,
     get_product_images,
@@ -39,6 +41,8 @@ from .utils.digital_products import (
     increment_download_count,
 )
 from .utils.variants_picker import get_variant_picker_data
+from ranged_fileresponse import RangedFileResponse
+from . import get_course_prefix
 
 
 def product_details(request, slug, product_id, form=None):
@@ -230,3 +234,22 @@ def collection_index(request, slug, pk):
     ctx = get_product_list_context(request, product_filter)
     ctx.update({"object": collection})
     return TemplateResponse(request, "collection/index.html", ctx)
+
+
+@login_required
+def stream_video(request, product_pk, video_pk):
+    current_user = request.user
+    if not current_user.has_perm("product.manage_products"):
+        return HttpResponseForbidden
+
+    product = Product.objects.prefetch_related("videos").get(pk=product_pk)
+    video = product.videos.get(pk=video_pk)
+
+    #check if user has purchased the course
+    # if ("product.manage_products" not in current_user.permissions):
+    #     pass
+
+    prefix_path = get_course_prefix()
+    filename = video.video.path
+    response = RangedFileResponse(request, open(filename, 'rb'), content_type='video/mp4')
+    return response

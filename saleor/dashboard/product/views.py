@@ -50,7 +50,7 @@ def product_list(request):
 @staff_member_required
 @permission_required("product.manage_products")
 def product_details(request, pk):
-    products = Product.objects.prefetch_related("variants", "images").all()
+    products = Product.objects.prefetch_related("variants", "images", "videos").all()
     product = get_object_or_404(products, pk=pk)
     variants = product.variants.all()
     images = product.images.all()

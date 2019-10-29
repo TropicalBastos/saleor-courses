@@ -1,5 +1,11 @@
 from django.utils.translation import pgettext_lazy
+import os
 
+def get_course_prefix():
+    return os.path.abspath(os.path.dirname(__name__))
+
+def get_course_url(product_pk, video_pk):
+    return f'stream/course/{product_pk}/video/{video_pk}/'
 
 class ProductAvailabilityStatus:
     NOT_PUBLISHED = "not-published"

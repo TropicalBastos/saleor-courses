@@ -1,7 +1,6 @@
 from decimal import Decimal
 from typing import Iterable, Union
 from uuid import uuid4
-import os
 
 from django.conf import settings
 from django.contrib.postgres.aggregates import StringAgg
@@ -41,7 +40,7 @@ from ..core.weight import WeightUnits, zero_weight
 from ..discount import DiscountInfo
 from ..discount.utils import calculate_discounted_price
 from ..seo.models import SeoModel, SeoModelTranslation
-from . import AttributeInputType
+from . import AttributeInputType, get_course_prefix
 
 
 class Category(MPTTModel, ModelWithMetadata, SeoModel):
@@ -897,7 +896,7 @@ class ProductVideo(SortableModel):
         Product, related_name="videos", on_delete=models.CASCADE
     )
 
-    prefix_path = os.path.abspath(os.path.dirname(__name__))
+    prefix_path = get_course_prefix()
     upload_storage = FileSystemStorage(location=prefix_path)
     video = models.FileField(upload_to="products", storage=upload_storage, validators=[FileExtensionValidator(['mp4'])])
     title = models.CharField(max_length=128, default=None)

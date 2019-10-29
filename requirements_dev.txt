@@ -185,3 +185,4 @@ wrapt==1.11.2
 yapf==0.28.0
 yarl==1.3.0; python_version >= "3.5"
 zipp==0.6.0
+django-ranged-fileresponse==0.1.2

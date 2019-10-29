@@ -127,3 +127,4 @@ vine==1.3.0
 weasyprint==50
 webencodings==0.5.1
 zipp==0.6.0
+django-ranged-fileresponse==0.1.2

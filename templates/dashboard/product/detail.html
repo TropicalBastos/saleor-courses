@@ -92,8 +92,8 @@
               <div class="col s4">
                 <h3>{{ video.title }}</h3>
                 <p>{{ video.description }}</p>
-                <video class="dashboard-video">
-                  <source src="/media/{{ video.video }}" type="video/mp4" />
+                <video controls class="dashboard-video">
+                  <source src="/stream/course/{{ product.pk }}/video/{{ video.pk }}" type="video/mp4" />
                 </video>
               </div>
             {% endfor %}

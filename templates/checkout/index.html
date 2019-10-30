@@ -26,13 +26,10 @@
     {% if checkout_lines %}
       <div class="table__header d-none d-md-block">
         <div class="row">
-          <div class="col-md-7">
+          <div class="col-10">
             <small>{% trans "Product" context "Checkout table header" %}</small>
           </div>
-          <div class="col-md-3">
-            <small>{% trans "Quantity" context "Checkout table header" %}</small>
-          </div>
-          <div class="col-md-2 text-right">
+          <div class="col-2">
             <small>{% trans "Price" context "Checkout table header" %}</small>
           </div>
         </div>
@@ -40,7 +37,7 @@
       {% for line in checkout_lines %}
         <div class="checkout-preview__line{% if forloop.last %} last{% endif %} table__row">
           <div class="row">
-            <div class="col-7 checkout-preview__line__product">
+            <div class="col-10 checkout-preview__line__product">
               <a class="link--clean" href="{{ line.variant.get_absolute_url }}">
                 <img class="lazyload lazypreload" data-src="{% get_product_image_thumbnail line.variant.get_first_image method="thumbnail" size=60 %}"
                      data-srcset="{% get_product_image_thumbnail line.variant.get_first_image method="thumbnail" size=60 %} 1x, {% get_product_image_thumbnail line.variant.get_first_image method="thumbnail" size=120 %} 2x"
@@ -48,20 +45,8 @@
                 <p>{{ line.variant.product.translated }}<br><small>{{ line.variant.translated }}</small></p>
               </a>
             </div>
-            <div class="col-5">
+            <div class="col-2">
               <div class="row">
-                <div class="checkout-preview__line__quantity col-md-7 col-12">
-                  <form role="form" action="{% url "checkout:update-line" variant_id=line.variant.pk %}" method="post" class="form-checkout">
-                    <div class="{% if form.quantity.errors %} has-error{% endif %}" tabindex="-1">
-                      {{ line.form.quantity }}
-                    </div>
-                    {% csrf_token %}
-                  </form>
-                  <span class="checkout-preview-item-delete">
-                    <svg data-src="{% static "images/delete.svg" %}" height="20px" width="20px" />
-                  </span>
-                  <small class="checkout-preview__line__quantity-error text-danger"></small>
-                </div>
                 <div class="checkout-preview-item-price col-md-5 col-12" data-product-id="{{ line.variant.pk }}">
                   <p class="text-right">
                     {% price line.get_total %}

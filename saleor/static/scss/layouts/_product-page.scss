@@ -36,14 +36,14 @@
       }
     }
     &__button {
-      width: 80%;
+      width: 100%;
       float: right;
       margin-top: $global-margin * 2.5;
       button {
         min-width: 100%;
       }
       @include media-breakpoint-down(sm) {
-        width: 50%;
+        width: 100%;
         .btn.primary {
           padding: $global-padding;
         }

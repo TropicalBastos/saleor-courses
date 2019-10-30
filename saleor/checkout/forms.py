@@ -39,9 +39,6 @@ class AddToCheckoutForm(forms.Form):
     The save method adds it to the checkout.
     """
 
-    quantity = QuantityField(
-        label=pgettext_lazy("Add to checkout form field label", "Quantity")
-    )
     error_messages = {
         "not-available": pgettext_lazy(
             "Add to checkout form error",
@@ -83,7 +80,7 @@ class AddToCheckoutForm(forms.Form):
         already there) does not exceed available quantity.
         """
         cleaned_data = super().clean()
-        quantity = cleaned_data.get("quantity")
+        quantity = 1
         if quantity is None:
             return cleaned_data
         variant = self.get_variant(cleaned_data)
@@ -117,8 +114,8 @@ class AddToCheckoutForm(forms.Form):
         from .utils import add_variant_to_checkout
 
         variant = self.get_variant(self.cleaned_data)
-        quantity = self.cleaned_data["quantity"]
-        add_variant_to_checkout(self.checkout, variant, quantity)
+        quantity = 1
+        add_variant_to_checkout(self.checkout, variant, quantity, True)
 
     def get_variant(self, cleaned_data):
         """Return a product variant that matches submitted values.
@@ -139,10 +136,6 @@ class ReplaceCheckoutLineForm(AddToCheckoutForm):
     def __init__(self, *args, **kwargs):
         self.variant = kwargs.pop("variant")
         super().__init__(*args, product=self.variant.product, **kwargs)
-        self.fields["quantity"].widget.attrs = {
-            "min": 1,
-            "max": settings.MAX_CHECKOUT_LINE_QUANTITY,
-        }
 
     def clean_quantity(self):
         """Clean the quantity field.
@@ -150,7 +143,7 @@ class ReplaceCheckoutLineForm(AddToCheckoutForm):
         Checks if target quantity does not exceed the currently available
         quantity.
         """
-        quantity = self.cleaned_data["quantity"]
+        quantity = 1
         try:
             self.variant.check_quantity(quantity)
         except InsufficientStock as e:

@@ -42,9 +42,7 @@ def handle_fully_paid_order(order: "Order"):
             order=order, user=None, email_type=events.OrderEventsEmails.PAYMENT
         )
         send_payment_confirmation.delay(order.pk)
-
-        if utils.order_needs_automatic_fullfilment(order):
-            automatically_fulfill_digital_lines(order)
+        automatically_fulfill_digital_lines(order)
     try:
         analytics.report_order(order.tracking_client_id, order)
     except Exception:
@@ -235,19 +233,19 @@ def automatically_fulfill_digital_lines(order: "Order"):
     digital_lines = digital_lines.prefetch_related("variant__digital_content")
 
     if not digital_lines:
-        return
-    fulfillment, _ = Fulfillment.objects.get_or_create(order=order)
-    for line in digital_lines:
-        if not order_line_needs_automatic_fulfillment(line):
-            continue
-        digital_content = line.variant.digital_content
-        digital_content.urls.create(line=line)
-        quantity = line.quantity
-        FulfillmentLine.objects.create(
-            fulfillment=fulfillment, order_line=line, quantity=quantity
-        )
-        fulfill_order_line(order_line=line, quantity=quantity)
-    emails.send_fulfillment_confirmation_to_customer(
-        order, fulfillment, user=order.user
-    )
-    update_order_status(order)
+        digital_lines = order.lines.digital()
+        if not digital_lines:
+            return
+        fulfillment, _ = Fulfillment.objects.get_or_create(order=order)
+        for line in digital_lines:
+            if not order_line_needs_automatic_fulfillment(line):
+                continue
+            digital_content = line.variant.digital_content
+            digital_content.urls.create(line=line)
+            quantity = line.quantity
+            FulfillmentLine.objects.create(
+                fulfillment=fulfillment, order_line=line, quantity=quantity
+            )
+            fulfill_order_line(order_line=line, quantity=quantity)
+        order.status = OrderStatus.FULFILLED
+        order.save(update_fields=["status"])

@@ -1125,7 +1125,6 @@ def abort_order_data(order_data: dict):
             remove_voucher_usage_by_customer(voucher, order_data["user_email"])
 
 
-@transaction.atomic
 def create_order(*, checkout: Checkout, order_data: dict, user: User) -> Order:
     """Create an order from the checkout.
 

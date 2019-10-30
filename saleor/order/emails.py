@@ -88,13 +88,6 @@ def send_fulfillment_confirmation_to_customer(order, fulfillment, user):
         order=order, user=user, email_type=events.OrderEventsEmails.FULFILLMENT
     )
 
-    # If digital lines were sent in the fulfillment email,
-    # trigger the event
-    if any((line for line in order if line.variant.is_digital())):
-        events.email_sent_event(
-            order=order, user=user, email_type=events.OrderEventsEmails.DIGITAL_LINKS
-        )
-
 
 @app.task
 def send_fulfillment_update(order_pk, fulfillment_pk):

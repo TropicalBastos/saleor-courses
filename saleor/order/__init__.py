@@ -265,7 +265,6 @@ class OrderEventsEmails:
     TRACKING_UPDATED = "tracking_updated"
     ORDER = "order_confirmation"
     FULFILLMENT = "fulfillment_confirmation"
-    DIGITAL_LINKS = "digital_links"
 
     CHOICES = [
         (
@@ -301,13 +300,6 @@ class OrderEventsEmails:
             pgettext_lazy(
                 "A fulfillment confirmation email was sent",
                 "The fulfillment confirmation email was sent",
-            ),
-        ),
-        (
-            DIGITAL_LINKS,
-            pgettext_lazy(
-                "An email containing a or some digital link was sent",
-                "The email containing the digital links was sent",
             ),
         ),
     ]

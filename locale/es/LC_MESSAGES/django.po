@@ -6345,6 +6345,11 @@ msgctxt "Filter heading title"
 msgid "Filters"
 msgstr "Filtros"
 
+#: templates/product/product_list_base.html:77
+msgctxt "All products title"
+msgid "All Courses"
+msgstr "Todos los cursos"
+
 #: templates/product/product_list_base.html:91
 msgid "Sort by: <b>name</b>"
 msgstr "Ordenar por: <b>nombre</b>"

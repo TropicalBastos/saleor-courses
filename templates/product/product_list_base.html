@@ -12,7 +12,9 @@
 {% endblock footer_scripts %}
 
 {% block title %}
-  {% if object.seo_title %}
+  {% if all_products %}
+    {% trans "All Courses" context "All products title" %}
+  {% elif object.seo_title %}
     {{ object.translated.seo_title }}
   {% else %}
     {{ object.translated.name }} - {{ block.super }}
@@ -74,7 +76,7 @@
           <div class="product-list__header__title">
           <h1>
             {% if all_products %}
-              <strong>{% trans 'All Courses' %}</strong>
+              <strong>{% trans "All Courses" context "All products title" %}</strong>
             {% else %}
               <strong>{{ object.translated }}</strong>
             {% endif %}

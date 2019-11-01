@@ -47,10 +47,10 @@ translatable_urlpatterns = [
     url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     url(r"^order/", include((order_urls, "order"), namespace="order")),
     url(r"^page/", include((page_urls, "page"), namespace="page")),
-    url(r"^products/", include((product_urls, "product"), namespace="product")),
     url(r"^account/", include((account_urls, "account"), namespace="account")),
     url(r"^feeds/", include((feed_urls, "data_feeds"), namespace="data_feeds")),
     url(r"^search/", include((search_urls, "search"), namespace="search")),
+    url(r"^courses/", include((product_urls, "product"), namespace="product")),
 ]
 
 urlpatterns = non_translatable_urlpatterns + i18n_patterns(*translatable_urlpatterns)

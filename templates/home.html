@@ -11,7 +11,7 @@
               <div class="home--content-inner">
                 <h1>{% trans "Promo & Sale" context "Homepage title" %}</h1>
                 <h2>{% trans "from the Northpole" context "Homepage title" %}</h2>
-                  <a class="btn btn-secondary home__button" href="/courses">
+                  <a class="btn btn-secondary home__button" href="{% url "product:all" %}">
                     {% trans "View Courses" context "Homepage action" %}
                   </a>
               </div>

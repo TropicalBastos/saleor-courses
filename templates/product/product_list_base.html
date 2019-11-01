@@ -73,7 +73,11 @@
         <div class="product-list__header">
           <div class="product-list__header__title">
           <h1>
-            <strong>{{ object.translated }}</strong>
+            {% if all_products %}
+              <strong>{% trans 'All Courses' %}</strong>
+            {% else %}
+              <strong>{{ object.translated }}</strong>
+            {% endif %}
           </h1>
           {% block title_tree %}{% endblock title_tree %}
         </div>

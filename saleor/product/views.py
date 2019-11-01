@@ -24,7 +24,7 @@ from ..checkout.utils import (
 )
 from ..core.utils import serialize_decimal
 from ..seo.schema.product import product_json_ld
-from .filters import ProductCategoryFilter, ProductCollectionFilter
+from .filters import ProductCategoryFilter, ProductCollectionFilter, ProductGeneralFilter
 from .forms import ProductForm
 from .models import Category, DigitalContentUrl, Product
 from .utils import (
@@ -234,6 +234,19 @@ def collection_index(request, slug, pk):
     ctx = get_product_list_context(request, product_filter)
     ctx.update({"object": collection})
     return TemplateResponse(request, "collection/index.html", ctx)
+
+
+def courses_index(request):
+    products = (
+        products_for_products_list(user=request.user)
+        .order_by("name")
+    )
+    product_filter = ProductGeneralFilter(
+        request.GET, queryset=products
+    )
+    ctx = get_product_list_context(request, product_filter)
+    ctx.update({"all_products": True})
+    return TemplateResponse(request, "product/all.html", ctx)
 
 
 @login_required

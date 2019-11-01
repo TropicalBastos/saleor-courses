@@ -10,7 +10,7 @@ from django.utils.translation import pgettext_lazy
 from django_filters import MultipleChoiceFilter, OrderingFilter, RangeFilter
 
 from ..core.filters import SortedFilterSet
-from .models import Attribute, Product
+from .models import Attribute, Product, ProductType, ProductVariant
 
 SORT_BY_FIELDS = OrderedDict(
     [
@@ -140,6 +140,17 @@ class ProductFilter(SortedFilterSet):
         if attribute_values:
             queryset = filter_products_by_attributes_values(queryset, attribute_values)
         return queryset
+
+
+class ProductGeneralFilter(ProductFilter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def _get_product_attributes_lookup(self):
+        return Q(pk__isnull=False)
+
+    def _get_variant_attributes_lookup(self):
+        return Q(pk__isnull=False)
 
 
 class ProductCategoryFilter(ProductFilter):

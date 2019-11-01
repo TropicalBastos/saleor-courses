@@ -28,4 +28,9 @@ urlpatterns = [
         views.collection_index,
         name="collection",
     ),
+    url(
+        r"^all$",
+        views.courses_index,
+        name="all",
+    ),
 ]

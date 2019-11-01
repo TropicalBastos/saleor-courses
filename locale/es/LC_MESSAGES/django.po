@@ -5903,6 +5903,11 @@ msgctxt "Homepage title"
 msgid "Promo & Sale"
 msgstr "Promociónes y Descuentos"
 
+#: templates/home.html:15
+msgctxt "Homepage action"
+msgid "View Courses"
+msgstr "Mirar Cursos"
+
 #: templates/home.html:13
 msgctxt "Homepage title"
 msgid "from the Northpole"
@@ -5927,6 +5932,11 @@ msgstr "Descargas digitales"
 msgctxt "Homepage title"
 msgid "Featured products"
 msgstr "Productos destacados"
+
+#: templates/home.html:51
+msgctxt "Homepage title"
+msgid "Featured courses"
+msgstr "Cursos destacados"
 
 #: templates/materializecssform/field.html:32
 #: templates/materializecssform/field.html:59

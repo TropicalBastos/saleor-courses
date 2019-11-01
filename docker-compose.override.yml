@@ -15,6 +15,7 @@ services:
       # shared volume between celery and web for media
       - saleor-media:/app/media
       - ./products:/app/products
+      - ./locale:/app/locale
 
   db:
     ports:

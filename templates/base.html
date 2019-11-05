@@ -80,6 +80,10 @@
                 </li>
               {% endif %}
               <li>
+                <a href="{% url "account:details" %}#courses">
+                  {% trans "Your courses" context "Main navigation item" %}</a>
+              </li>
+              <li>
                 <a href="{% url "account:details" %}">
                   {% trans "Your account" context "Main navigation item" %}</a>
               </li>

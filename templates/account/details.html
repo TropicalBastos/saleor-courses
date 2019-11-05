@@ -27,12 +27,12 @@
       <h2>{% trans "My account" %}</h2>
       <ul class="nav nav-tabs col-lg-11 m-auto" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" data-toggle="tab" href="#courses" role="tab">
+          <a class="nav-link" data-toggle="tab" href="#courses" role="tab">
             <h3>{% trans "Your Courses" context "User profile tab" %}</h3>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-toggle="tab" href="#orders" role="tab">
+          <a class="nav-link active" data-toggle="tab" href="#orders" role="tab">
             <h3>{% trans "Recent Orders" context "User profile tab" %}</h3>
           </a>
         </li>
@@ -56,7 +56,7 @@
       </ul>
     </div>
     <div class="tab-content col-lg-11 m-auto">
-      <div class="tab-pane active fade show" id="courses" role="tabpanel">
+      <div class="tab-pane fade" id="courses" role="tabpanel">
           <h1 class="mb-4 text-center">{% trans "Your Courses" %}</h1>
           <div id="accordion" role="tablist" aria-multiselectable="true">
             {% if courses|length %}
@@ -79,7 +79,7 @@
             {% endif %}
           </div>
       </div>
-      <div class="tab-pane fade" id="orders" role="tabpanel">
+      <div class="tab-pane active fade show" id="orders" role="tabpanel">
         <div id="accordion" role="tablist" aria-multiselectable="true">
           {% if orders|length %}
             <div class="table__header">

@@ -91,6 +91,23 @@ def details(request):
     password_form = get_or_process_password_form(request)
     name_form = get_or_process_name_form(request)
     orders = request.user.orders.confirmed().prefetch_related("lines")
+
+    paid_orders = [order for order in orders if order.is_fully_paid()]
+    lines = [order.lines.prefetch_related(
+                "variant__product",
+                "variant__videos",
+                "variant__images")
+                    .first() for order in paid_orders]
+
+    variants = list(map(lambda x: x.variant, lines))
+    courses = []
+    for variant in variants:
+        course = {}
+        course["details"] = variant.product
+        course["images"] = variant.product.images.all()
+        course["videos"] = variant.product.videos.all()
+        courses.append(course)
+
     orders_paginated = get_paginator_items(
         orders, settings.PAGINATE_BY, request.GET.get("page")
     )
@@ -99,6 +116,7 @@ def details(request):
         "orders": orders_paginated,
         "change_password_form": password_form,
         "user_name_form": name_form,
+        "courses": courses,
     }
 
     return TemplateResponse(request, "account/details.html", ctx)

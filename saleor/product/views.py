@@ -256,7 +256,8 @@ def stream_video(request, product_pk, video_pk):
     #check if user has purchased the course or is super admin
     if not current_user.has_perm("product.manage_products"):
         orders = request.user.orders.confirmed().prefetch_related("lines")
-        lines = orders.lines().prefetch_related("order_lines").all()
+        paid_orders = [order for order in orders if order.is_fully_paid()]
+        lines = paid_orders.lines().prefetch_related("order_lines").all()
         found = [line for line in lines if line.variant.pk == product_pk]
         if not found:
             return HttpResponseForbidden

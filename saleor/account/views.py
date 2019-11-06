@@ -9,11 +9,13 @@ from django.template.response import TemplateResponse
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import pgettext, ugettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.http import HttpResponseForbidden
 
 from ..account import events as account_events
 from ..checkout.utils import find_and_assign_anonymous_checkout
 from ..core.utils import get_paginator_items
 from .emails import send_account_delete_confirmation_email
+from ..product.models import Product
 from .forms import (
     ChangePasswordForm,
     LoginForm,
@@ -87,6 +89,30 @@ def password_reset_confirm(request, uidb64=None, token=None):
 
 
 @login_required
+def videos(request, course_pk):
+    orders = request.user.orders.confirmed().prefetch_related("lines")
+    paid_orders = [order for order in orders if order.is_fully_paid()]
+    lines = []
+
+    for order in paid_orders:
+        lines += order.lines.all()
+
+    found = [line for line in lines if int(line.variant.pk) == int(course_pk)]
+    if not found:
+        return HttpResponseForbidden
+
+    product = Product.objects.prefetch_related("videos").get(pk=course_pk)
+    videos = product.videos.all()
+
+    ctx = {
+        "course": product,
+        "videos": videos
+    }
+
+    return TemplateResponse(request, "account/videos.html", ctx)
+
+
+@login_required
 def details(request):
     password_form = get_or_process_password_form(request)
     name_form = get_or_process_name_form(request)
@@ -103,6 +129,7 @@ def details(request):
     courses = []
     for variant in variants:
         course = {}
+        course["pk"] = variant.product.pk
         course["details"] = variant.product
         course["images"] = variant.product.images.all()
         course["videos"] = variant.product.videos.all()

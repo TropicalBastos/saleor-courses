@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load i18n_address_tags %}
+{% load account_utils %}
+
+{% block title %}{{ video.title }} — {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="account">
+    <div class="container">
+        <h1 class="mb-5 mt-5">{{ video.title }}</h1>
+        <div class="row mb-5">
+            <div class="col-12">
+                <video class="w-100" controls>
+                    <source src="/stream/course/{{ course.pk }}/video/{{ video.pk }}" type="video/mp4" />
+                </video>
+                <h4 class="mt-3">{{ video.title }}</h4>
+                <p>{{ video.description | safe_truncate:100 }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

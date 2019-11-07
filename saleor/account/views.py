@@ -89,16 +89,10 @@ def password_reset_confirm(request, uidb64=None, token=None):
 
 
 @login_required
-def videos(request, course_pk):
-    orders = request.user.orders.confirmed().prefetch_related("lines")
-    paid_orders = [order for order in orders if order.is_fully_paid()]
-    lines = []
+def videos_list(request, course_pk):
+    resp = get_purchased_product_or_forbidden(request, course_pk)
 
-    for order in paid_orders:
-        lines += order.lines.all()
-
-    found = [line for line in lines if int(line.variant.pk) == int(course_pk)]
-    if not found:
+    if resp is HttpResponseForbidden:
         return HttpResponseForbidden
 
     product = Product.objects.prefetch_related("videos").get(pk=course_pk)
@@ -110,6 +104,39 @@ def videos(request, course_pk):
     }
 
     return TemplateResponse(request, "account/videos.html", ctx)
+
+
+def get_purchased_product_or_forbidden(request, pk):
+    orders = request.user.orders.confirmed().prefetch_related("lines")
+    paid_orders = [order for order in orders if order.is_fully_paid()]
+    lines = []
+
+    for order in paid_orders:
+        lines += order.lines.all()
+
+    found = [line for line in lines if int(line.variant.pk) == int(pk)]
+    if not found:
+        return HttpResponseForbidden
+
+    return Product.objects.prefetch_related("videos").get(pk=pk)
+
+
+@login_required
+def video(request, course_pk, video_pk):
+    resp = get_purchased_product_or_forbidden(request, course_pk)
+
+    if resp is HttpResponseForbidden:
+        return HttpResponseForbidden
+
+    product = Product.objects.prefetch_related("videos").get(pk=course_pk)
+    video = product.videos.get(pk=video_pk)
+
+    ctx = {
+        "course": product,
+        "video": video
+    }
+
+    return TemplateResponse(request, "account/video.html", ctx)
 
 
 @login_required

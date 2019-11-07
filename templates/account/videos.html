@@ -11,13 +11,13 @@
             <h1 class="mb-5 mt-5">{{ course.name }}</h1>
             {% for video in videos %}
                 {% if forloop.first %}<div class="row mb-5">{% endif %}
-                <div class="col-md-6 col-sm-12">
-                <video class="w-100">
-                    <source src="/stream/course/{{ course.pk }}/video/{{ video.pk }}" type="video/mp4" />
-                </video>
-                <h4 class="mt-3">{{ video.title }}</h4>
-                <p>{{ video.description | safe_truncate:100 }}</p>
-                </div>
+                <a class="col-md-6 col-sm-12" href="{% url "account:video" course_pk=course.pk video_pk=video.pk %}">
+                    <video class="w-100">
+                        <source src="/stream/course/{{ course.pk }}/video/{{ video.pk }}" type="video/mp4" />
+                    </video>
+                    <h4 class="mt-3">{{ video.title }}</h4>
+                    <p>{{ video.description | safe_truncate:100 }}</p>
+                </a>
                 {% if forloop.counter|divisibleby:2 %}</div><div class="row mb-5">{% endif %}
                 {% if forloop.last %}</div>{% endif %}
             {% endfor %}

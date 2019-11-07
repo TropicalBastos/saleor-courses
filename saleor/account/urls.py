@@ -36,5 +36,6 @@ urlpatterns = [
         views.account_delete_confirm,
         name="delete-confirm",
     ),
-    url(r"^videos/(?P<course_pk>\d+)$", views.videos, name="videos"),
+    url(r"^videos/(?P<course_pk>\d+)$", views.videos_list, name="videos"),
+    url(r"^videos/(?P<course_pk>\d+)/video/(?P<video_pk>\d+)/$", views.video, name="video"),
 ]

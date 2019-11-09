@@ -38,7 +38,8 @@
     "react-dom": "^16.8.6",
     "select2": "^4.0.7",
     "sortablejs": "^1.9.0",
-    "svg-injector-2": "^2.0.35"
+    "svg-injector-2": "^2.0.35",
+    "video.js": "^7.6.5"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",

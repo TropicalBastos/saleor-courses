@@ -43,6 +43,7 @@ from .utils.digital_products import (
 from .utils.variants_picker import get_variant_picker_data
 from ranged_fileresponse import RangedFileResponse
 from . import get_course_prefix
+from django.views.static import serve
 
 
 def product_details(request, slug, product_id, form=None):
@@ -265,7 +266,25 @@ def stream_video(request, product_pk, video_pk):
     product = Product.objects.prefetch_related("videos").get(pk=product_pk)
     video = product.videos.get(pk=video_pk)
 
-    prefix_path = get_course_prefix()
-    filename = video.video.path
-    response = RangedFileResponse(request, open(filename, 'rb'), content_type='video/mp4')
-    return response
+
+@login_required
+def protected_serve(request, product_pk, video_pk, document_root=None):
+    current_user = request.user
+
+    #check if user has purchased the course or is super admin
+    if not current_user.has_perm("product.manage_products"):
+        orders = request.user.orders.confirmed().prefetch_related("lines")
+        paid_orders = [order for order in orders if order.is_fully_paid()]
+        lines = paid_orders.lines().prefetch_related("order_lines").all()
+        found = [line for line in lines if line.variant.pk == product_pk]
+        if not found:
+            return HttpResponseForbidden
+
+    product = Product.objects.prefetch_related("videos").get(pk=product_pk)
+    video = product.videos.get(pk=video_pk)
+    video_path = video.video.path
+    parts = video_path.split("/")
+    video_part = parts[len(parts) - 1]
+
+
+    return serve(request, video_part, document_root)

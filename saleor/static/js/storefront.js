@@ -1,6 +1,8 @@
 import "jquery";
 import "jquery.cookie";
 import "bootstrap";
+import "video.js";
+import "video.js/dist/video-js.min.css";
 
 import "../scss/storefront.scss";
 

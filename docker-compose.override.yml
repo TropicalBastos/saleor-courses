@@ -16,6 +16,8 @@ services:
       - saleor-media:/app/media
       - ./products:/app/products
       - ./locale:/app/locale
+      - ./package.json:/app/package.json
+      - ./webpack.config.js:/app/webpack.config.js
 
   db:
     ports:

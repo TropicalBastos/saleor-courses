@@ -69,7 +69,7 @@ module.exports = (_, argv) => {
           loader: 'babel-loader'
         },
         {
-          test: /\.scss$/,
+          test: /(\.scss)|(\.css)$/,
           use: [
             MiniCssExtractPlugin.loader,
             {

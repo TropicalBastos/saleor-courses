@@ -11,7 +11,7 @@
         <h1 class="mb-5 mt-5">{{ video.title }}</h1>
         <div class="row mb-5">
             <div class="col-12">
-                <video id='my-video' class='video-js w-100' controls preload='auto' data-setup='{}'>
+                <video id='course-video' class='video-js w-100 vjs-16-9' controls preload='auto' data-setup='{}'>
                     <source src='/stream/course/{{ course.pk }}/video/{{ video.pk }}' type='video/mp4'>
                     <p class='vjs-no-js'>
                     To view this video please enable JavaScript, and consider upgrading to a web browser that

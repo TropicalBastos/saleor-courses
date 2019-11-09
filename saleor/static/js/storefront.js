@@ -18,3 +18,4 @@ import "./components/sorter";
 import "./components/styleguide";
 import "./components/variant-picker";
 import "./components/description-json";
+import "./components/course-video";

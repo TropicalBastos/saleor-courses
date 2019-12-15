@@ -158,7 +158,7 @@ def details(request):
         course = {}
         course["pk"] = variant.product.pk
         course["details"] = variant.product
-        course["images"] = variant.product.images.all()
+        course["images"] = [variant.product.images.first()]
         course["videos"] = variant.product.videos.all()
         courses.append(course)
 

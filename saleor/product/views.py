@@ -11,6 +11,7 @@ from django.http import (
     HttpResponseForbidden,
     JsonResponse,
 )
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -271,6 +272,10 @@ def stream_video(request, product_pk, video_pk):
 def protected_serve(request, product_pk, video_pk, document_root=None):
     current_user = request.user
 
+    #check if the user has fetched it directly and deny them unless its fetched in a video tag
+    if request.META['HTTP_SEC_FETCH_MODE'] == 'navigate':
+        raise PermissionDenied
+
     #check if user has purchased the course or is super admin
     if not current_user.has_perm("product.manage_products"):
         orders = request.user.orders.confirmed().prefetch_related("lines")
@@ -278,13 +283,12 @@ def protected_serve(request, product_pk, video_pk, document_root=None):
         lines = paid_orders.lines().prefetch_related("order_lines").all()
         found = [line for line in lines if line.variant.pk == product_pk]
         if not found:
-            return HttpResponseForbidden
+            raise PermissionDenied
 
     product = Product.objects.prefetch_related("videos").get(pk=product_pk)
     video = product.videos.get(pk=video_pk)
     video_path = video.video.path
     parts = video_path.split("/")
     video_part = parts[len(parts) - 1]
-
 
     return serve(request, video_part, document_root)

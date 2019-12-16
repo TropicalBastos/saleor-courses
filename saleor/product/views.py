@@ -46,6 +46,19 @@ from ranged_fileresponse import RangedFileResponse
 from . import get_course_prefix
 from django.views.static import serve
 
+def is_product_purchased(request, pk):
+    orders = request.user.orders.confirmed().prefetch_related("lines")
+    paid_orders = [order for order in orders if order.is_fully_paid()]
+    lines = []
+
+    for order in paid_orders:
+        lines += order.lines.all()
+
+    found = [line for line in lines if int(line.variant.pk) == int(pk)]
+    if not found:
+        return False
+    
+    return True
 
 def product_details(request, slug, product_id, form=None):
     """Product details page.
@@ -128,6 +141,7 @@ def product_details(request, slug, product_id, form=None):
         "json_ld_product_data": json.dumps(
             json_ld_data, default=serialize_decimal, cls=SafeJSONEncoder
         ),
+        "product_purchased": is_product_purchased(request, product_id)
     }
     return TemplateResponse(request, "product/details.html", ctx)
 

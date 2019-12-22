@@ -8,9 +8,9 @@
 
 <div align="center">
   A modular, high performance e-commerce storefront for selling video courses based on Saleor - <a href="https://github.com/mirumee/saleor">https://github.com/mirumee/saleor</a>
+
+  <p>This is a fork of Saleor and specializes in the sale of video courses and tutorials.</p>
+
+  <p>See the base Saleor repo for instructions on how to build and install.</p>
 </div>
-
-<p align="center">This is a fork of Saleor and specializes in the sale of video courses and tutorials.</p>
-
-<p align="center">See the base Saleor repo for instructions on how to build and install.</p>
  

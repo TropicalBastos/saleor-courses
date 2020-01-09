@@ -94,6 +94,7 @@ class ProductTypeForm(forms.ModelForm):
         required=False, label=pgettext_lazy("Product type tax rate type", "Tax rate")
     )
     weight = WeightField(
+        required=False,
         label=pgettext_lazy("ProductType weight", "Weight"),
         help_text=pgettext_lazy(
             "ProductVariant weight help text",

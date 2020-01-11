@@ -50,10 +50,11 @@
     }
   }
   &__login {
-    margin: $global-margin * 5 0 $global-margin * 3;
+    margin: $global-margin * 5 auto $global-margin * 3 auto;
     border: 1px solid $gray;
     border-radius: $button-border-radius;
     text-align: center;
+    max-width: 500px;
     h3 {
       margin-bottom: $global-margin * 3;
     }

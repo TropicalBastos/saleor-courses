@@ -12,9 +12,14 @@
   </fieldset>
   <div class="row login__btn-group">
     <div class="col-sm-12">
-      <button class="btn btn-primary narrow">
+      <button type="submit" class="btn btn-primary narrow">
         {% trans "Log in" context "Login form primary action" %}
       </button>
+      <div class="row">
+        <a href="{% url 'account:signup' %}" class="mt-3 btn btn-primary narrow">
+          {% trans "Register" context "Login form primary action" %}
+        </a>
+      </div>
       <a rel="nofollow" class="link--styled" href="{% url 'account:reset-password' %}">
         {% trans "Forgot password?" context "Login form secondary link" %}
       </a>

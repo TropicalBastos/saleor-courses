@@ -47,6 +47,9 @@ from . import get_course_prefix
 from django.views.static import serve
 
 def is_product_purchased(request, pk):
+    if not hasattr(request.user, 'orders'):
+        return False
+
     orders = request.user.orders.confirmed().prefetch_related("lines")
     paid_orders = [order for order in orders if order.is_fully_paid()]
     lines = []

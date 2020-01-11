@@ -312,11 +312,8 @@ class ProductForm(MoneyModelForm, AttributesMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.manager = get_extensions_manager()
-        product_type = self.instance.product_type
         self.initial["tax_rate"] = get_product_tax_rate(self.instance, self.manager)
-        self.available_attributes = product_type.product_attributes.prefetch_related(
-            "values"
-        ).product_attributes_sorted()
+        self.available_attributes = []
         self.prepare_fields_for_attributes()
         self.fields["collections"].initial = Collection.objects.filter(
             products__name=self.instance
@@ -347,13 +344,6 @@ class ProductForm(MoneyModelForm, AttributesMixin):
             self.fields["price"].label = pgettext_lazy(
                 "Currency net amount", "Net price"
             )
-
-        if not product_type.is_shipping_required:
-            del self.fields["weight"]
-        else:
-            self.fields["weight"].widget.attrs[
-                "placeholder"
-            ] = product_type.weight.value
 
         self.fields["price"].required = True
 
@@ -401,37 +391,12 @@ class ProductVariantForm(MoneyModelForm, AttributesMixin):
     class Meta:
         model = ProductVariant
         fields = [
-            "sku",
             "price_override",
-            "weight",
             "cost_price",
-            "track_inventory",
         ]
-        labels = {
-            "sku": pgettext_lazy("SKU", "SKU"),
-            "track_inventory": pgettext_lazy(
-                "Track inventory field", "Track inventory"
-            ),
-        }
-        help_texts = {
-            "track_inventory": pgettext_lazy(
-                "product variant handle stock field help text",
-                "Automatically track this product's inventory",
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        if self.instance.product.pk:
-            self.fields["price_override"].widget.attrs[
-                "placeholder"
-            ] = self.instance.product.price.amount
-            qs = self.instance.product.product_type.variant_attributes
-            self.available_attributes = qs.prefetch_related(
-                "values"
-            ).variant_attributes_sorted()
-            self.prepare_fields_for_attributes()
 
         if include_taxes_in_prices():
             self.fields["price_override"].label = pgettext_lazy(
@@ -446,14 +411,6 @@ class ProductVariantForm(MoneyModelForm, AttributesMixin):
             )
             self.fields["cost_price"].label = pgettext_lazy(
                 "Currency amount", "Cost net price"
-            )
-
-        if not self.instance.product.product_type.is_shipping_required:
-            del self.fields["weight"]
-        else:
-            self.fields["weight"].widget.attrs["placeholder"] = (
-                getattr(self.instance.product.weight, "value", None)
-                or self.instance.product.product_type.weight.value
             )
 
     @transaction.atomic

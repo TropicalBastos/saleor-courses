@@ -34,7 +34,6 @@ class CheckoutQueryset(models.QuerySet):
             "lines__variant__translations",
             "lines__variant__product__translations",
             "lines__variant__product__images",
-            "lines__variant__product__product_type__product_attributes__values",
         )  # noqa
 
 

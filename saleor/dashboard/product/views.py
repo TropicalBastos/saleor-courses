@@ -25,6 +25,7 @@ from ..views import staff_member_required
 from . import forms
 from .filters import AttributeFilter, ProductFilter, ProductTypeFilter
 from .utils import get_product_tax_rate
+from pprint import pprint
 
 
 @staff_member_required
@@ -68,7 +69,7 @@ def product_details(request, pk):
     # no_variants is True for product types that doesn't require variant.
     # In this case we're using the first variant under the hood to allow stock
     # management.
-    no_variants = not product.product_type.has_variants
+    no_variants = True
     only_variant = variants.first() if no_variants else None
     ctx = {
         "product": product,
@@ -122,12 +123,10 @@ def product_select_type(request):
 
 @staff_member_required
 @permission_required("product.manage_products")
-def product_create(request, type_pk):
+def product_create(request):
     track_inventory = request.site.settings.track_inventory_by_default
-    product_type = get_object_or_404(ProductType, pk=type_pk)
-    create_variant = not product_type.has_variants
+    create_variant = True
     product = Product()
-    product.product_type = product_type
     product_form = forms.ProductForm(request.POST or None, instance=product)
     if create_variant:
         variant = ProductVariant(product=product, track_inventory=track_inventory)
@@ -160,13 +159,11 @@ def product_create(request, type_pk):
 @permission_required("product.manage_products")
 def product_edit(request, pk):
     product = get_object_or_404(
-        Product.objects.prefetch_related(
-            "variants", "product_type", "product_type__attributeproduct", "attributes"
-        ),
+        Product.objects,
         pk=pk,
     )
     form = forms.ProductForm(request.POST or None, instance=product)
-    edit_variant = not product.product_type.has_variants
+    edit_variant = False
     if edit_variant:
         variant = product.variants.first()
         variant_form = forms.ProductVariantForm(

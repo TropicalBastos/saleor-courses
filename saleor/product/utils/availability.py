@@ -56,8 +56,8 @@ def get_product_availability_status(product):
     are_all_variants_in_stock = all(
         variant.is_in_stock() for variant in product.variants.all()
     )
-    is_in_stock = any(variant.is_in_stock() for variant in product.variants.all())
-    requires_variants = product.product_type.has_variants
+    is_in_stock = True
+    requires_variants = False
 
     if not product.is_published:
         return ProductAvailabilityStatus.NOT_PUBLISHED

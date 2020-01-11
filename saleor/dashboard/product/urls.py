@@ -13,7 +13,7 @@ urlpatterns = [
     url(
         r"^add/select-type/$", views.product_select_type, name="product-add-select-type"
     ),
-    url(r"^add/(?P<type_pk>[0-9]+)/$", views.product_create, name="product-add"),
+    url(r"^add$", views.product_create, name="product-add"),
     url(r"^(?P<pk>[0-9]+)/update/$", views.product_edit, name="product-update"),
     url(r"^(?P<pk>[0-9]+)/delete/$", views.product_delete, name="product-delete"),
     url(r"^bulk-update/$", views.product_bulk_update, name="product-bulk-update"),

@@ -9,7 +9,7 @@ def fill_is_shipping_required(apps, schema_editor):
     OrderLine = apps.get_model("order", "OrderLine")
     for line in OrderLine.objects.all():
         if line.product:
-            line.is_shipping_required = line.product.product_type.is_shipping_required
+            line.is_shipping_required = False
             line.save(update_fields=["is_shipping_required"])
 
 

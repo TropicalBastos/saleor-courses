@@ -245,9 +245,6 @@ class ProductsQueryset(PublishedQuerySet):
 
 
 class Product(SeoModel, ModelWithMetadata, PublishableModel):
-    product_type = models.ForeignKey(
-        ProductType, related_name="products", on_delete=models.CASCADE
-    )
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     description_json = SanitizedJSONField(
@@ -337,7 +334,7 @@ class Product(SeoModel, ModelWithMetadata, PublishableModel):
         return slugify(smart_text(unidecode(self.name)))
 
     def is_in_stock(self):
-        return any(variant.is_in_stock() for variant in self)
+        return True
 
     def get_first_image(self):
         images = list(self.images.all())
@@ -413,7 +410,7 @@ class ProductVariantQueryset(models.QuerySet):
 
 
 class ProductVariant(ModelWithMetadata):
-    sku = models.CharField(max_length=255, unique=True)
+    sku = models.CharField(max_length=255, unique=True, null=True)
     name = models.CharField(max_length=255, blank=True)
     currency = models.CharField(
         max_length=settings.DEFAULT_CURRENCY_CODE_LENGTH,
@@ -460,7 +457,7 @@ class ProductVariant(ModelWithMetadata):
         app_label = "product"
 
     def __str__(self):
-        return self.name or self.sku
+        return ''
 
     @property
     def quantity_available(self):
@@ -508,11 +505,10 @@ class ProductVariant(ModelWithMetadata):
         )
 
     def is_shipping_required(self):
-        return self.product.product_type.is_shipping_required
+        return False
 
     def is_digital(self):
-        is_digital = self.product.product_type.is_digital
-        return not self.is_shipping_required() and is_digital
+        return True
 
     def is_in_stock(self):
         return self.quantity_available > 0

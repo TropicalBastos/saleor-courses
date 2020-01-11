@@ -25,8 +25,6 @@ def products_with_details(user):
         "category__translations",
         "collections__translations",
         "images",
-        "product_type__product_attributes__translations",
-        "product_type__product_attributes__values__translations",
         "attributes__values__translations",
         "attributes__assignment__attribute__translations",
         "variants__variant_images__image",

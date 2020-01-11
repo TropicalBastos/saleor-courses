@@ -118,14 +118,12 @@ def checkout_index(request, checkout):
     except Checkout.DoesNotExist:
         pass
 
-    lines = checkout.lines.select_related("variant__product__product_type")
+    lines = checkout.lines.select_related("variant__product")
     lines = lines.prefetch_related(
         "variant__translations",
         "variant__product__translations",
         "variant__product__images",
-        "variant__product__product_type__variant_attributes__translations",
         "variant__images",
-        "variant__product__product_type__variant_attributes",
     )
     manager = request.extensions
     for line in lines:

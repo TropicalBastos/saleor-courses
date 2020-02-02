@@ -5903,10 +5903,11 @@ msgctxt "Homepage title"
 msgid "Promo & Sale"
 msgstr "Promociónes y Descuentos"
 
-#: templates/home.html:15
-msgctxt "Homepage action"
-msgid "View Courses"
-msgstr "Mirar Cursos"
+msgid "View courses"
+msgstr "Ver Cursos"
+
+msgid "Your Courses"
+msgstr "Tus Cursos"
 
 #: templates/home.html:13
 msgctxt "Homepage title"

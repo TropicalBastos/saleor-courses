@@ -177,18 +177,6 @@
                   {% trans "Configuration"  context "Dashboard configuration" %}
                 </p>
                 <ul>
-                  {% if perms.product.manage_products %}
-                    <li class="{% block menu_product_types_class %}{% endblock %}">
-                      <a href="{% url 'dashboard:product-type-list' %}">
-                        {% trans "Product types" context "Dashboard product types list" %}
-                      </a>
-                    </li>
-                    <li class="{% block menu_attributes_class %}{% endblock %}">
-                      <a href="{% url 'dashboard:attributes' %}">
-                        {% trans "Attributes" context "Dashboard attributes list" %}
-                      </a>
-                    </li>
-                  {% endif %}
                   {% if perms.menu.manage_menus %}
                     <li class="{% block menu_menus_class %}{% endblock %}">
                       <a href="{% url 'dashboard:menu-list' %}">

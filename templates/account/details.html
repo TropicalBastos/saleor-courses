@@ -76,6 +76,8 @@
                 {% if forloop.counter|divisibleby:2 %}</div><div class="row mb-5">{% endif %}
                 {% if forloop.last %}</div>{% endif %}
               {% endfor %}
+            {% else %}
+              <a href="{% url "product:all" %}" class="btn btn-primary d-block mx-auto avg-btn">{% trans "View courses" %}</a>
             {% endif %}
           </div>
       </div>

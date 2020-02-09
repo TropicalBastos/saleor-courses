@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import List, TYPE_CHECKING
 
 from django.utils.translation import pgettext_lazy
 
@@ -9,6 +9,8 @@ from . import (
     GatewayConfig,
     authorize,
     capture,
+    create_form,
+    get_client_token,
     list_client_sources,
     process_payment,
     refund,
@@ -35,6 +37,13 @@ def require_active_plugin(fn):
 class StripeGatewayPlugin(BasePlugin):
     PLUGIN_NAME = GATEWAY_NAME
     CONFIG_STRUCTURE = {
+        "Template path": {
+            "type": ConfigurationTypeField.STRING,
+            "help_text": pgettext_lazy(
+                "Plugin help text", "Location of django payment template for gateway."
+            ),
+            "label": pgettext_lazy("Plugin label", "Template path"),
+        },
         "Public API key": {
             "type": ConfigurationTypeField.STRING,
             "help_text": pgettext_lazy(
@@ -81,12 +90,12 @@ class StripeGatewayPlugin(BasePlugin):
             configuration = {item["name"]: item["value"] for item in configuration}
             self.config = GatewayConfig(
                 gateway_name=GATEWAY_NAME,
+                template_path=configuration["Template path"],
                 auto_capture=configuration["Automatic payment capture"],
                 connection_params={
                     "public_key": configuration["Public API key"],
                     "private_key": configuration["Secret API key"],
                 },
-                template_path="",
                 store_customer=configuration["Store customers card"],
             )
 
@@ -105,6 +114,7 @@ class StripeGatewayPlugin(BasePlugin):
             "description": "",
             "active": False,
             "configuration": [
+                {"name": "Template path", "value": "order/payment/stripe.html"},
                 {"name": "Public API key", "value": ""},
                 {"name": "Secret API key", "value": ""},
                 {"name": "Store customers card", "value": False},
@@ -155,9 +165,23 @@ class StripeGatewayPlugin(BasePlugin):
         return previous_value
 
     @require_active_plugin
+    def create_form(
+        self, data, payment_information: "PaymentData", previous_value
+    ) -> "forms.Form":
+        return create_form(data, payment_information)
+
+    @require_active_plugin
+    def get_client_token(self, token_config: "TokenConfig", previous_value):
+        return get_client_token(self._get_gateway_config(), token_config)
+
+    @require_active_plugin
     def get_payment_config(self, previous_value):
         config = self._get_gateway_config()
         return [
             {"field": "api_key", "value": config.connection_params["public_key"]},
             {"field": "store_customer_card", "value": config.store_customer},
         ]
+
+    @require_active_plugin
+    def get_payment_template(self, previous_value) -> str:
+        return self._get_gateway_config().template_path

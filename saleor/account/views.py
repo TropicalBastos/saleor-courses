@@ -126,7 +126,7 @@ def video(request, course_pk, video_pk):
     resp = get_purchased_product_or_forbidden(request, course_pk)
 
     if resp is HttpResponseForbidden:
-        return HttpResponseForbidden
+        return HttpResponseForbidden()
 
     product = Product.objects.prefetch_related("videos").get(pk=course_pk)
     video = product.videos.get(pk=video_pk)

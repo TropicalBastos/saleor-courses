@@ -297,8 +297,12 @@ def protected_serve(request, product_pk, video_pk, document_root=None):
     if not current_user.has_perm("product.manage_products"):
         orders = request.user.orders.confirmed().prefetch_related("lines")
         paid_orders = [order for order in orders if order.is_fully_paid()]
-        lines = paid_orders.lines().prefetch_related("order_lines").all()
-        found = [line for line in lines if line.variant.pk == product_pk]
+
+        lines = []
+        for po in paid_orders:
+            lines += po.lines.all()
+
+        found = [line for line in lines if int(line.variant.pk) == int(product_pk)]
         if not found:
             raise PermissionDenied
 

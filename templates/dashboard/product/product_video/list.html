@@ -59,9 +59,13 @@
                     data-id="{{ video.pk }}">
                   <div class="card">
                     <div class="card-image product-gallery-item-video">
-                      <video class="dashboard-video">
-                        <source src="/stream/course/{{ product.pk }}/video/{{ video.pk }}" type="video/mp4" />
-                      </video>
+                      {% if video.thumbnail %}
+                        <img class="w-100" src="/media/{{ video.thumbnail }}" />
+                      {% else %}
+                        <video class="dashboard-video">
+                            <source src="/stream/course/{{ product.pk }}/video/{{ video.pk }}" type="video/mp4" />
+                        </video>
+                      {% endif %}
                     </div>
                     <div class="sortable__drag-area"></div>
                     <div class="card-action">

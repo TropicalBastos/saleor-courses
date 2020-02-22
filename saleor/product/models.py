@@ -899,6 +899,7 @@ class ProductVideo(SortableModel):
     prefix_path = get_course_prefix()
     upload_storage = FileSystemStorage(location=prefix_path)
     video = models.FileField(upload_to="products", storage=upload_storage, validators=[FileExtensionValidator(['mp4'])])
+    thumbnail = models.FileField(upload_to="products", validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])], null=True)
     title = models.CharField(max_length=128, default=None)
     description = models.TextField(blank=True)
 

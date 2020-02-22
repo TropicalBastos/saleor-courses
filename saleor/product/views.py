@@ -46,6 +46,11 @@ from ranged_fileresponse import RangedFileResponse
 from . import get_course_prefix
 from django.views.static import serve
 
+import re
+from wsgiref.util import FileWrapper
+from django.http.response import StreamingHttpResponse
+from .utils import RangeFileWrapper
+
 def is_product_purchased(request, pk):
     if not hasattr(request.user, 'orders'):
         return False
@@ -267,22 +272,56 @@ def courses_index(request):
     ctx.update({"all_products": True})
     return TemplateResponse(request, "product/all.html", ctx)
 
+range_re = re.compile(r'bytes\s*=\s*(\d+)\s*-\s*(\d*)', re.I)
+
+def send_video(request, path):
+    range_header = request.META.get('HTTP_RANGE', '').strip()
+    range_match = range_re.match(range_header)
+    size = os.path.getsize(path)
+    content_type, encoding = mimetypes.guess_type(path)
+    content_type = content_type or 'application/octet-stream'
+    if range_match:
+        first_byte, last_byte = range_match.groups()
+        first_byte = int(first_byte) if first_byte else 0
+        last_byte = int(last_byte) if last_byte else size - 1
+        if last_byte >= size:
+            last_byte = size - 1
+        length = last_byte - first_byte + 1
+        resp = StreamingHttpResponse(RangeFileWrapper(open(path, 'rb'), offset=first_byte, length=length), status=206, content_type=content_type)
+        resp['Content-Length'] = str(length)
+        resp['Content-Range'] = 'bytes %s-%s/%s' % (first_byte, last_byte, size)
+    else:
+        resp = StreamingHttpResponse(FileWrapper(open(path, 'rb')), content_type=content_type)
+        resp['Content-Length'] = str(size)
+    resp['Accept-Ranges'] = 'bytes'
+    return resp
 
 @login_required
 def stream_video(request, product_pk, video_pk):
     current_user = request.user
 
+    #check if the user has fetched it directly and deny them unless its fetched in a video tag
+    if request.META['HTTP_SEC_FETCH_MODE'] == 'navigate':
+        raise PermissionDenied
+
     #check if user has purchased the course or is super admin
     if not current_user.has_perm("product.manage_products"):
         orders = request.user.orders.confirmed().prefetch_related("lines")
         paid_orders = [order for order in orders if order.is_fully_paid()]
-        lines = paid_orders.lines().prefetch_related("order_lines").all()
-        found = [line for line in lines if line.variant.pk == product_pk]
+
+        lines = []
+        for po in paid_orders:
+            lines += po.lines.all()
+
+        found = [line for line in lines if int(line.variant.pk) == int(product_pk)]
         if not found:
-            return HttpResponseForbidden
+            raise PermissionDenied
 
     product = Product.objects.prefetch_related("videos").get(pk=product_pk)
     video = product.videos.get(pk=video_pk)
+    video_path = video.video.path
+
+    return send_video(request, video_path)
 
 
 @login_required

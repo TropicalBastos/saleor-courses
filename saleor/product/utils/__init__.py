@@ -8,6 +8,7 @@ from ...core.utils import get_paginator_items
 from ...core.utils.filters import get_now_sorted_by
 from .availability import products_with_availability
 
+import os
 
 def products_visible_to_user(user):
     # pylint: disable=cyclic-import
@@ -156,3 +157,33 @@ def calculate_revenue_for_variant(variant, start_date):
             gross = order_line.unit_price_gross * order_line.quantity
             revenue += TaxedMoney(net, gross)
     return revenue
+
+class RangeFileWrapper(object):
+    def __init__(self, filelike, blksize=8192, offset=0, length=None):
+        self.filelike = filelike
+        self.filelike.seek(offset, os.SEEK_SET)
+        self.remaining = length
+        self.blksize = blksize
+
+    def close(self):
+        if hasattr(self.filelike, 'close'):
+            self.filelike.close()
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.remaining is None:
+            # If remaining is None, we're reading the entire file.
+            data = self.filelike.read(self.blksize)
+            if data:
+                return data
+            raise StopIteration()
+        else:
+            if self.remaining <= 0:
+                raise StopIteration()
+            data = self.filelike.read(min(self.remaining, self.blksize))
+            if not data:
+                raise StopIteration()
+            self.remaining -= len(data)
+            return data

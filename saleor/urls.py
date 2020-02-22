@@ -36,8 +36,7 @@ non_translatable_urlpatterns = [
     url("", include("social_django.urls", namespace="social")),
     url(
         r"^stream/course/(?P<product_pk>[0-9]+)/video/(?P<video_pk>[0-9]+)/$",
-        product_views.protected_serve,
-        {'document_root': settings.COURSE_ROOT}
+        product_views.stream_video
     ),
 ]
 

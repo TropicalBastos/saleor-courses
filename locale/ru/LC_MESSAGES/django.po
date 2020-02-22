@@ -40,6 +40,20 @@ msgctxt "Event from a customer that got their account created"
 msgid "The account account was created"
 msgstr ""
 
+msgid "Your Courses"
+msgstr "Твои курсы"
+
+msgctxt "All products title"
+msgid "All Courses"
+msgstr "Все курсы"
+
+msgid "View courses"
+msgstr "Просмотреть курсы"
+
+msgctxt "Homepage title"
+msgid "Featured courses"
+msgstr "Рекомендуемые курсы"
+
 #: saleor/account/__init__.py:35
 msgctxt "Event from a customer that got the password reset link sent by email"
 msgid "Password reset link was sent to the customer"

@@ -92,9 +92,13 @@
               <div class="col s4">
                 <h3>{{ video.title }}</h3>
                 <p>{{ video.description }}</p>
-                <video controls class="dashboard-video">
-                  <source src="/stream/course/{{ product.pk }}/video/{{ video.pk }}" type="video/mp4" />
-                </video>
+                {% if video.thumbnail %}
+                  <img class="w-100" src="/media/{{ video.thumbnail }}" />
+                {% else %}
+                  <video class="dashboard-video">
+                      <source src="/stream/course/{{ product.pk }}/video/{{ video.pk }}" type="video/mp4" />
+                  </video>
+                {% endif %}
               </div>
             {% endfor %}
           </div>

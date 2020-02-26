@@ -11,7 +11,7 @@
             <h1 class="mb-5 mt-5">{{ course.name }}</h1>
             {% for video in videos %}
                 {% if forloop.first %}<div class="row mb-5">{% endif %}
-                <a class="col-md-6 col-sm-12" href="{% url "account:video" course_pk=course.pk video_pk=video.pk %}">
+                <a class="col-md-6 col-sm-12 nounderline" href="{% url "account:video" course_pk=course.pk video_pk=video.pk %}">
                     {% if video.thumbnail %}
                         <img class="w-100" src="/media/{{ video.thumbnail }}" />
                     {% else %}

@@ -16,7 +16,7 @@ from ..core.utils import get_client_ip
 from ..payment import ChargeStatus, TransactionKind, gateway as payment_gateway
 from ..payment.utils import create_payment, fetch_customer_id
 from . import FulfillmentStatus
-from .forms import CustomerNoteForm, PasswordForm, PaymentDeleteForm, PaymentsForm
+from .forms import CustomerNoteForm, PasswordForm, PaymentDeleteForm, PaymentsForm, get_gateways
 from .models import Order
 from .utils import attach_order_to_user, check_order_status
 
@@ -72,7 +72,11 @@ def payment(request, token):
     payment_form = None
     if not order.is_pre_authorized():
         payment_form = PaymentsForm(form_data)
-        # FIXME: redirect if there is only one payment
+        # redirect if there is only one payment
+        gateways = get_gateways()
+        if len(gateways) == 1:
+            return redirect("order:payment", token=order.token, gateway=gateways[0][0])
+
         if payment_form.is_valid():
             payment = payment_form.cleaned_data["gateway"]
             return redirect("order:payment", token=order.token, gateway=payment)

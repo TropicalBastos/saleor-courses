@@ -10,12 +10,12 @@
     <div class="form-group">
       <div id="card-element" class="stripe" style="padding-top: .55rem;"></div>
     </div><!-- form-group -->
+    <div class="outcome mt-1 mb-2">
+      <div class="error text-danger"></div>
+    </div>
     <button id="card-button" class="btn btn-primary btn-block">
       {% trans "Make payment" context "Payment form primary action" %}
     </button>
-    <div class="outcome">
-      <div class="error"></div>
-    </div>
     {% csrf_token %}
     {% if form.errors or form.non_field_errors %}
       <blockquote>
@@ -63,6 +63,7 @@ var cardholderName = document.getElementById('cardholder-name');
 var cardButton = document.getElementById('card-button');
 var payment_method_id = document.getElementById('id_payment_method_id');
 var form = document.getElementById('payment-form');
+var errorElement = document.getElementsByClassName('error')[0];
 
 cardButton.addEventListener('click', function(ev) {
   ev.preventDefault();
@@ -71,7 +72,7 @@ cardButton.addEventListener('click', function(ev) {
   }).then(function(result) {
     if (result.error) {
       // Show error in payment form
-      errorElement.textContent = result.error.message;
+      errorElement.textContent = "*" + result.error.message;
       errorElement.classList.add('visible');
     } else {
       // Otherwise send paymentMethod.id to your server (see Step 2)

@@ -5,6 +5,17 @@
 
 {% block title %}{{ course.name }} — {{ block.super }}{% endblock %}
 
+{% block breadcrumb %}
+  <ul class="breadcrumbs list-unstyled">
+    <li>
+      <a href="{% url 'account:details' %}#courses">
+        {% trans "Courses" %}
+      </a>
+    </li>
+    <li>{{ course.name }}</li>
+  </ul>
+{% endblock breadcrumb %}
+
 {% block content %}
     <div class="account">
         <div class="container">

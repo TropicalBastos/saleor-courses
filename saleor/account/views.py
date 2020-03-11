@@ -93,7 +93,7 @@ def videos_list(request, course_pk):
     resp = get_purchased_product_or_forbidden(request, course_pk)
 
     if resp is HttpResponseForbidden:
-        return HttpResponseForbidden
+        return HttpResponseForbidden()
 
     product = Product.objects.prefetch_related("videos").get(pk=course_pk)
     videos = product.videos.all()
@@ -107,6 +107,9 @@ def videos_list(request, course_pk):
 
 
 def get_purchased_product_or_forbidden(request, pk):
+    if request.user.is_superuser:
+        return Product.objects.prefetch_related("videos").get(pk=pk)
+
     orders = request.user.orders.confirmed().prefetch_related("lines")
     paid_orders = [order for order in orders if order.is_fully_paid()]
     lines = []
@@ -161,6 +164,21 @@ def details(request):
         course["images"] = [variant.product.images.first()]
         course["videos"] = variant.product.videos.all()
         courses.append(course)
+
+    if request.user.is_superuser:
+        courses = []
+        variants = Product.objects.prefetch_related(
+            "videos",
+            "images"
+        )
+
+        for variant in variants:
+            course = {}
+            course["pk"] = variant.pk
+            course["details"] = variant
+            course["images"] = [variant.images.first()]
+            course["videos"] = variant.videos.all()
+            courses.append(course)
 
     orders_paginated = get_paginator_items(
         orders, settings.PAGINATE_BY, request.GET.get("page")

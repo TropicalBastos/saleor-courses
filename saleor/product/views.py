@@ -300,8 +300,8 @@ def send_video(request, path):
 def stream_video(request, product_pk, video_pk):
     current_user = request.user
 
-    #check if the user has fetched it directly and deny them unless its fetched in a video tag
-    if request.META['HTTP_SEC_FETCH_MODE'] == 'navigate':
+    #check if the user has fetched it directly and deny them unless its fetched from the video tag
+    if 'HTTP_REFERER' not in request.META or '/account/videos/' not in request.META['HTTP_REFERER']:
         raise PermissionDenied
 
     #check if user has purchased the course or is super admin

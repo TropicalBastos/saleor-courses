@@ -158,6 +158,8 @@ def details(request):
     variants = list(map(lambda x: x.variant, lines))
     courses = []
     for variant in variants:
+        if variant == None:
+            continue
         course = {}
         course["pk"] = variant.product.pk
         course["details"] = variant.product

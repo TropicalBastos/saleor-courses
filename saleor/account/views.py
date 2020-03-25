@@ -117,7 +117,7 @@ def get_purchased_product_or_forbidden(request, pk):
     for order in paid_orders:
         lines += order.lines.all()
 
-    found = [line for line in lines if int(line.variant.pk) == int(pk)]
+    found = [line for line in lines if line and line.variant and int(line.variant.pk) == int(pk)]
     if not found:
         return HttpResponseForbidden
 

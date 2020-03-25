@@ -313,7 +313,7 @@ def stream_video(request, product_pk, video_pk):
         for po in paid_orders:
             lines += po.lines.all()
 
-        found = [line for line in lines if int(line.variant.pk) == int(product_pk)]
+        found = [line for line in lines if line and line.variant and int(line.variant.pk) == int(product_pk)]
         if not found:
             raise PermissionDenied
 

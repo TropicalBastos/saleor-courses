@@ -55,7 +55,9 @@ def check_order_status(func):
     def decorator(*args, **kwargs):
         token = kwargs.pop("token")
         order = get_object_or_404(Order.objects.confirmed(), token=token)
-        if not order.billing_address or order.is_fully_paid():
+        if order.is_fully_paid():
+            return redirect("order:checkout-success", token=order.token)
+        elif not order.billing_address:
             return redirect("order:details", token=order.token)
         kwargs["order"] = order
         return func(*args, **kwargs)

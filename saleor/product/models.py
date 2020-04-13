@@ -1,6 +1,7 @@
 from decimal import Decimal
 from typing import Iterable, Union
 from uuid import uuid4
+import os
 
 from django.conf import settings
 from django.contrib.postgres.aggregates import StringAgg
@@ -24,6 +25,7 @@ from prices import MoneyRange
 from text_unidecode import unidecode
 from versatileimagefield.fields import PPOIField, VersatileImageField
 from django.core.files.storage import FileSystemStorage
+from django.dispatch import receiver
 
 from ..core.db.fields import SanitizedJSONField
 from ..core.exceptions import InsufficientStock
@@ -909,6 +911,37 @@ class ProductVideo(SortableModel):
 
     def get_ordering_queryset(self):
         return self.product.videos.all()
+
+
+@receiver(models.signals.post_delete, sender=ProductVideo)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `ProductVideo` object is deleted.
+    """
+    if instance.video:
+        if os.path.isfile(instance.video.path):
+            os.remove(instance.video.path)
+
+@receiver(models.signals.pre_save, sender=ProductVideo)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """
+    Deletes old file from filesystem
+    when corresponding `ProductVideo` object is updated
+    with new file.
+    """
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = ProductVideo.objects.get(pk=instance.pk).video
+    except ProductVideo.DoesNotExist:
+        return False
+
+    new_file = instance.video
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
 
 
 class VariantImage(models.Model):

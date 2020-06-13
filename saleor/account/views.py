@@ -149,14 +149,19 @@ def details(request):
     orders = request.user.orders.confirmed().prefetch_related("lines")
 
     paid_orders = [order for order in orders if order.is_fully_paid()]
-    lines = [order.lines.prefetch_related(
+    variants = []
+
+    for order in paid_orders:
+        lines = order.lines.prefetch_related(
                 "variant__product",
                 "variant__videos",
-                "variant__images")
-                    .first() for order in paid_orders]
+                "variant__images").all()
 
-    variants = list(map(lambda x: x.variant, lines))
+        for line in lines:
+            variants.append(line.variant)
+    
     courses = []
+
     for variant in variants:
         if variant == None:
             continue

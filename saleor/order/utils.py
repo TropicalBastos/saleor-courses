@@ -57,8 +57,6 @@ def check_order_status(func):
         order = get_object_or_404(Order.objects.confirmed(), token=token)
         if order.is_fully_paid():
             return redirect("order:checkout-success", token=order.token)
-        elif not order.billing_address:
-            return redirect("order:details", token=order.token)
         kwargs["order"] = order
         return func(*args, **kwargs)
 

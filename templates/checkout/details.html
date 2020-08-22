@@ -27,10 +27,7 @@
 
 {% block content %}
   <div class="row checkout">
-    <div class="col-md-7">
-      {% block forms %}{% endblock %}
-    </div>
-    <div class="col-md-5">
+    <div class="col-md-12">
       <div class="checkout__review">
         <h3 class="checkout__review__tittle">{% trans "Order review" context "Order review title" %}</h3>
         {% for line, line_total in checkout_lines %}
@@ -99,6 +96,10 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="col-md-12 mt-4">
+      {% block forms %}{% endblock %}
     </div>
   </div>
 {% endblock content %}

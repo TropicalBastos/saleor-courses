@@ -998,17 +998,10 @@ def _process_shipping_data_for_order(checkout, shipping_price):
 
 def _process_user_data_for_order(checkout):
     """Fetch, process and return shipping data from checkout."""
-    billing_address = checkout.billing_address
-
-    if checkout.user:
-        store_user_address(checkout.user, billing_address, AddressType.BILLING)
-        if checkout.user.addresses.filter(pk=billing_address.pk).exists():
-            billing_address = billing_address.get_copy()
 
     return {
         "user": checkout.user,
         "user_email": checkout.get_customer_email(),
-        "billing_address": billing_address,
         "customer_note": checkout.note,
     }
 

@@ -46,7 +46,7 @@ def details(request, token):
 
 
 def payment(request, token):
-    orders = Order.objects.confirmed().filter(billing_address__isnull=False)
+    orders = Order.objects.confirmed()
     orders = orders.prefetch_related(
         "lines__variant__images", "lines__variant__product__images"
     )
@@ -67,7 +67,7 @@ def payment(request, token):
         waiting_payment_form = PaymentDeleteForm(
             None, order=order, initial={"payment_id": waiting_payment.id}
         )
-    if order.is_fully_paid() or not order.billing_address:
+    if order.is_fully_paid():
         form_data = None
     payment_form = None
     if not order.is_pre_authorized():
@@ -98,7 +98,7 @@ def start_payment(request, order, gateway):
             gateway=gateway,
             currency=order.total.gross.currency,
             email=order.user_email,
-            billing_address=order.billing_address,
+            billing_address=None,
             customer_ip_address=get_client_ip(request),
             total=order.total.gross.amount,
             order=order,

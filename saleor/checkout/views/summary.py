@@ -125,12 +125,6 @@ def summary_without_shipping(request, checkout):
     if note_form.is_valid():
         note_form.save()
 
-    # user_addresses = checkout.user.addresses.all()
-
-    # addresses_form, address_form, updated = update_billing_address_in_checkout(
-    #     checkout, user_addresses, request.POST or None, request.country
-    # )
-
     if request.POST:
         return _handle_order_placement(request, checkout)
 

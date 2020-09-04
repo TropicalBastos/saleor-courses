@@ -39,6 +39,12 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Thank you for your order. Your order is now available in 'Your Courses'."
+msgstr "Gracias por su compra! Su compra ahora esta disponible en la página 'Tus Cursos'."
+
+msgid "Go to your courses"
+msgstr "Ir a tus cursos"
+
 #: saleor/account/__init__.py:28
 msgctxt "Event from a customer that got their account created"
 msgid "The account account was created"
@@ -6044,13 +6050,6 @@ msgstr "Número de seguimiento"
 msgctxt "Checkout success page title"
 msgid "Thank you"
 msgstr "Gracias"
-
-#: templates/order/checkout_success.html:16
-#: templates/order/checkout_success_anonymous.html:16
-#, python-format
-msgctxt "Checkout title"
-msgid "Thank you for your <a href=\"%(order_url)s\">order</a>!"
-msgstr "Gracias por su <a href=\"%(order_url)s\">compra</a>!"
 
 #: templates/order/checkout_success.html:20
 #: templates/order/checkout_success_anonymous.html:20

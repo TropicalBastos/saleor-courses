@@ -54,6 +54,12 @@ msgctxt "Homepage title"
 msgid "Featured courses"
 msgstr "Рекомендуемые курсы"
 
+msgid "Thank you for your order. Your order is now available in 'Your Courses'."
+msgstr "Спасибо за ваш заказ! Ваш заказ теперь доступен в разделе «Твои Курсы»."
+
+msgid "Go to your courses"
+msgstr "Перейти вы твои курсы"
+
 #: saleor/account/__init__.py:35
 msgctxt "Event from a customer that got the password reset link sent by email"
 msgid "Password reset link was sent to the customer"
@@ -6159,13 +6165,6 @@ msgstr "номер отслеживания"
 msgctxt "Checkout success page title"
 msgid "Thank you"
 msgstr "Спасибо вам"
-
-#: templates/order/checkout_success.html:16
-#: templates/order/checkout_success_anonymous.html:16
-#, python-format
-msgctxt "Checkout title"
-msgid "Thank you for your <a href=\"%(order_url)s\">order</a>!"
-msgstr "Спасибо за ваш <a href=\"%(order_url)s\">заказ</a>!"
 
 #: templates/order/checkout_success.html:20
 #: templates/order/checkout_success_anonymous.html:20

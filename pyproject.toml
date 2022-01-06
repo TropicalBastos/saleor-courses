@@ -17,7 +17,7 @@ babel = "~2.7"
 bleach = "~2"
 boto3 = "^1.9"
 braintree = "~3.49.0"
-celery = { version = "^4.3.0", extras = ["redis"] }
+celery = { version = ">=4.3,<6.0", extras = ["redis"] }
 dataclasses = { version = "^0.6", markers = "python_version < '3.7'" }
 dj-database-url = "^0"
 dj-email-url = "^0"
